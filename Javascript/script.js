@@ -15,7 +15,6 @@ titleBtn.addEventListener('click', function(e) {
     let important = localStorage.getItem('important')
     let importantDum = localStorage.getItem('importantDum')
 
-
     if (time == null) {
         timeObj = []
     } else {
@@ -42,23 +41,29 @@ titleBtn.addEventListener('click', function(e) {
     } else {
         importantDumObj = JSON.parse(importantDum)
     }
-    console.log(`The date is ${date}`);
-    timeObj.push(exactPeriod);
-    importantObj.push('btn-outline-info');
-    importantDumObj.push('btn-outline-danger');
-    let TitleValue = addTitle.value;
-    tObj.push(TitleValue);
-    let pushValue = addTxt.value;
-    notesObj.push(pushValue);
 
-    localStorage.setItem("title", JSON.stringify(tObj))
-    localStorage.setItem("important", JSON.stringify(importantObj))
-    localStorage.setItem("importantDum", JSON.stringify(importantDumObj))
-    addTitle.value = " ";
-    localStorage.setItem("notes", JSON.stringify(notesObj))
-    localStorage.setItem("time", JSON.stringify(timeObj))
-    addTxt.value = " ";
-    location.reload()
+    if (document.getElementById('addTitle').value == "") {
+        console.log('15');
+    } else {
+        console.log(`The date is ${date}`);
+        timeObj.push(exactPeriod);
+        importantObj.push('btn-outline-info');
+        importantDumObj.push('btn-outline-danger');
+        let TitleValue = addTitle.value;
+        tObj.push(TitleValue);
+        let pushValue = addTxt.value;
+        notesObj.push(pushValue);
+
+        localStorage.setItem("title", JSON.stringify(tObj))
+        localStorage.setItem("important", JSON.stringify(importantObj))
+        localStorage.setItem("importantDum", JSON.stringify(importantDumObj))
+        addTitle.value = " ";
+        localStorage.setItem("notes", JSON.stringify(notesObj))
+        localStorage.setItem("time", JSON.stringify(timeObj))
+        addTxt.value = " ";
+        location.reload()
+    }
+
 })
 
 
@@ -103,7 +108,7 @@ function showNotes() {
     <div class="noteCard my-2 mx-2 card" style="width: 18rem;margin:10px 20px">
         <div class="card-body" style='height:auto;'>
             <h5 class="card-title titleSearch">${tObj[index]}</h5>
-            <p class="card-text notes edit-element">${element}</p>
+            <p class="card-text notes-search edit-element">${element}</p>
             <button href="" id="${index}" onclick='deleteNote(this.id)'  type='button' style='margin:10px 0px;display:block;'class="btn btn-outline-primary container">Delete Note</button>
             <button href="" id="${index}" onclick='edit(this.id)'  type='button' style='margin:10px auto;width:110px;'class="btn btn-outline-warning" >Edit Note</button>
             <button href="" id="${index}" onclick='save(this.id)'  type='button' style='margin:10px auto;width:110px;'class="btn btn-outline-success">Save Note</button>
@@ -200,6 +205,7 @@ function deleteNote(anyValue) {
     }
     notesObj.splice(anyValue, 1);
     let title = localStorage.getItem('title')
+    let important = localStorage.getItem('important')
 
     if (title == null) {
         tObj = [];
@@ -215,14 +221,21 @@ function deleteNote(anyValue) {
     } else {
         timeObj = JSON.parse(time)
     }
+    if (important == null) {
+        importantObj = [];
+    } else {
+        importantObj = JSON.parse(important)
+    }
     timeObj.splice(anyValue, 1)
+    importantObj.splice(anyValue, 1)
     localStorage.setItem("notes", JSON.stringify(notesObj));
     localStorage.setItem("title", JSON.stringify(tObj));
     localStorage.setItem("time", JSON.stringify(timeObj));
+    localStorage.setItem("important", JSON.stringify(importantObj));
     if (notesObj.length == 0) {
         console.log('0');
         location.reload()
-
+        localStorage.clear()
     }
     showNotes();
 }
@@ -231,7 +244,7 @@ function deleteNote(anyValue) {
 let searchTxt = document.getElementById('searchTxt');
 let searchBtn = document.getElementById('searchBtn');
 searchBtn.addEventListener('click', function(e) {
-
+        console.log(function(e) {});
         let notes = localStorage.getItem('notes');
         if (notes == null) {
             notesObj = [];
@@ -251,22 +264,22 @@ searchBtn.addEventListener('click', function(e) {
 
         for (let i = 0; i < notesObj.length; i++) {
 
-            let ch = document.getElementsByClassName('notes')[i].innerText.toLowerCase().indexOf(checker.toLowerCase())
-            let many = document.querySelectorAll('.noteCard')
+            let ch = document.getElementsByClassName('notes-search')[i].innerText.toLowerCase().indexOf(checker.toLowerCase())
+            let many = document.querySelectorAll('.noteCard')[i]
             let searchTitle = document.getElementsByClassName('titleSearch')[i].innerText.toLowerCase().indexOf(checker.toLowerCase())
 
-            if (ch > -1) {
-                many[i].style.display = '';
+            if (ch > -1 || searchTitle > -1) {
+                many.style.display = '';
             } else {
-                many[i].style.display = 'none';
+                many.style.display = 'none';
             }
 
-            if (searchTitle > -1) {
-                many[i].style.display = '';
-            } else {
-                many[i].style.display = 'none';
+            // if (searchTitle > -1) {
+            //     many.style.display = '';
+            // } else {
+            //     many.style.display = 'none';
 
-            }
+            // }
         }
     })
     // Searching Box
